@@ -1,0 +1,49 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "AWS CloudFormation template for provisioning the 4front Redis ElastiCache instance",
+
+  "Parameters": {
+    "ClusterName": {
+      "Description": "The name of the cache cluster",
+      "Type": "String"
+    },
+
+    "ClusterNodeType": {
+      "Description": "The compute and memory capacity of the nodes in the Redis Cluster",
+      "Type": "String",
+      "AllowedValues": ["cache.m1.small", "cache.m1.large", "cache.m1.xlarge"],
+      "ConstraintDescription": "must select a valid Cache Node type."
+    },
+
+		"CacheSubnetGroupName": {
+			"Description": "The name of the CacheSubnetGroupName",
+      "Type": "String",
+      "Default": "cache.m1.small",
+      "AllowedValues": ["cache.m1.small", "cache.m1.large", "cache.m1.xlarge"],
+		},
+
+    "VpcSecurityGroupId": {
+      "Description": "The cache subnet group to associate with the cache cluster.",
+      "Type": "AWS::EC2::SecurityGroup::Id"
+    }
+  },
+  "Resources": {
+    "RedisCluster": {
+      "Type": "AWS::ElastiCache::CacheCluster",
+      "Properties": {
+        "ClusterName": {
+          "Ref": "ClusterName"
+        },
+        "CacheNodeType": {
+          "Ref": "ClusterNodeType"
+        },
+        "VpcSecurityGroupIds": [{
+          "Ref": "VpcSecurityGroupId"
+        }],
+        "Engine": "redis",
+        "NumCacheNodes": "1"
+      }
+    }
+  }
+}

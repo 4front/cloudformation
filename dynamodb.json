@@ -1,0 +1,241 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "AWS CloudFormation template for 4front DynamoDB tables",
+	"Resources": {
+		"DynamoDbApplicationTable": {
+			"Type": "AWS::DynamoDB::Table",
+			"Properties": {
+				"TableName": "4front_applications",
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "1",
+					"WriteCapacityUnits": "1"
+				},
+				"AttributeDefinitions": [{
+					"AttributeName": "appId",
+					"AttributeType": "S"
+				}, {
+					"AttributeName": "orgId",
+					"AttributeType": "S"
+				}],
+				"KeySchema": [{
+					"AttributeName": "appId",
+					"KeyType": "HASH"
+				}],
+				"GlobalSecondaryIndexes": [{
+					"IndexName": "orgIdIndex",
+					"KeySchema": [{
+						"AttributeName": "orgId",
+						"KeyType": "HASH"
+					}],
+					"Projection": {
+						"ProjectionType": "ALL"
+					},
+					"ProvisionedThroughput": {
+						"ReadCapacityUnits": "2",
+						"WriteCapacityUnits": "2"
+					}
+				}]
+			}
+		},
+
+		"DynamoDbOrganizationsTable": {
+			"Type": "AWS::DynamoDB::Table",
+			"Properties": {
+				"TableName": "4front_organizations",
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "1",
+					"WriteCapacityUnits": "1"
+				},
+				"AttributeDefinitions": [{
+					"AttributeName": "orgId",
+					"AttributeType": "S"
+				}],
+				"KeySchema": [{
+					"AttributeName": "orgId",
+					"KeyType": "HASH"
+				}]
+			}
+		},
+
+		"DynamoDbUserTable": {
+			"Type": "AWS::DynamoDB::Table",
+			"Properties": {
+				"TableName": "4front_users",
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "1",
+					"WriteCapacityUnits": "1"
+				},
+				"AttributeDefinitions": [{
+					"AttributeName": "userId",
+					"AttributeType": "S"
+				}, {
+					"AttributeName": "providerUserId",
+					"AttributeType": "S"
+				}, {
+					"AttributeName": "provider",
+					"AttributeType": "S"
+				}],
+				"KeySchema": [{
+					"AttributeName": "userId",
+					"KeyType": "HASH"
+				}],
+				"GlobalSecondaryIndexes": [{
+					"IndexName": "providerUserIndex",
+					"KeySchema": [{
+						"AttributeName": "providerUserId",
+						"KeyType": "HASH"
+					}, {
+						"AttributeName": "provider",
+						"KeyType": "RANGE"
+					}],
+					"Projection": {
+						"ProjectionType": "ALL"
+					},
+					"ProvisionedThroughput": {
+						"ReadCapacityUnits": "1",
+						"WriteCapacityUnits": "1"
+					}
+				}]
+			}
+		},
+
+		"DynamoDbOrgMemberTable": {
+			"Type": "AWS::DynamoDB::Table",
+			"Properties": {
+				"TableName": "4front_orgMembers",
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "1",
+					"WriteCapacityUnits": "1"
+				},
+				"AttributeDefinitions": [{
+					"AttributeName": "orgId",
+					"AttributeType": "S"
+				}, {
+					"AttributeName": "userId",
+					"AttributeType": "S"
+				}],
+				"KeySchema": [{
+					"AttributeName": "orgId",
+					"KeyType": "HASH"
+				}, {
+					"AttributeName": "userId",
+					"KeyType": "RANGE"
+				}],
+				"GlobalSecondaryIndexes": [{
+					"IndexName": "userIdIndex",
+					"KeySchema": [{
+						"AttributeName": "userId",
+						"KeyType": "HASH"
+					}],
+					"Projection": {
+						"ProjectionType": "ALL"
+					},
+					"ProvisionedThroughput": {
+						"ReadCapacityUnits": "1",
+						"WriteCapacityUnits": "1"
+					}
+				}]
+			}
+		},
+
+		"DynamoDomainsTable": {
+			"Type": "AWS::DynamoDB::Table",
+			"Properties": {
+				"TableName": "4front_domains",
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "1",
+					"WriteCapacityUnits": "1"
+				},
+				"AttributeDefinitions": [{
+					"AttributeName": "domain",
+					"AttributeType": "S"
+				}, {
+					"AttributeName": "appId",
+					"AttributeType": "S"
+				}],
+				"KeySchema": [{
+					"AttributeName": "domain",
+					"KeyType": "HASH"
+				}],
+				"GlobalSecondaryIndexes": [{
+					"IndexName": "appIdIndex",
+					"KeySchema": [{
+						"AttributeName": "appId",
+						"KeyType": "HASH"
+					}],
+					"Projection": {
+						"ProjectionType": "ALL"
+					},
+					"ProvisionedThroughput": {
+						"ReadCapacityUnits": "1",
+						"WriteCapacityUnits": "1"
+					}
+				}]
+			}
+		},
+
+		"DynamoAppNameTable": {
+			"Type": "AWS::DynamoDB::Table",
+			"Properties": {
+				"TableName": "4front_appName",
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "1",
+					"WriteCapacityUnits": "1"
+				},
+				"AttributeDefinitions": [{
+					"AttributeName": "name",
+					"AttributeType": "S"
+				}, {
+					"AttributeName": "appId",
+					"AttributeType": "S"
+				}],
+				"KeySchema": [{
+					"AttributeName": "name",
+					"KeyType": "HASH"
+				}],
+				"GlobalSecondaryIndexes": [{
+					"IndexName": "appIdIndex",
+					"KeySchema": [{
+						"AttributeName": "appId",
+						"KeyType": "HASH"
+					}],
+					"Projection": {
+						"ProjectionType": "ALL"
+					},
+					"ProvisionedThroughput": {
+						"ReadCapacityUnits": "1",
+						"WriteCapacityUnits": "1"
+					}
+				}]
+			}
+		},
+
+		"DynamoVersionsTable": {
+			"Type": "AWS::DynamoDB::Table",
+			"Properties": {
+				"TableName": "4front_versions",
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "1",
+					"WriteCapacityUnits": "1"
+				},
+				"AttributeDefinitions": [{
+					"AttributeName": "versionId",
+					"AttributeType": "S"
+				}, {
+					"AttributeName": "appId",
+					"AttributeType": "S"
+				}, {
+					"AttributeName": "versionNum",
+					"AttributeType": "S"
+				}],
+				"KeySchema": [{
+					"AttributeName": "appId",
+					"KeyType": "HASH"
+				}, {
+					"AttributeName": "versionId",
+					"KeyType": "RANGE"
+				}]
+			}
+		}
+	}
+}
