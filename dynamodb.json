@@ -226,7 +226,7 @@
 					"AttributeType": "S"
 				}, {
 					"AttributeName": "versionNum",
-					"AttributeType": "S"
+					"AttributeType": "N"
 				}],
 				"KeySchema": [{
 					"AttributeName": "appId",
@@ -234,6 +234,24 @@
 				}, {
 					"AttributeName": "versionId",
 					"KeyType": "RANGE"
+				}],
+				"GlobalSecondaryIndexes": [{
+					"IndexName": "appIdVersionNumIndex",
+					"KeySchema": [{
+						"AttributeName": "appId",
+						"KeyType": "HASH"
+					}, {
+						"AttributeName": "versionNum",
+						"KeyType": "RANGE"
+					}],
+					"Projection": {
+						"ProjectionType": "INCLUDE",
+						"NonKeyAttributes": ["versionNum", "message", "userId", "created"]
+					},
+					"ProvisionedThroughput": {
+						"ReadCapacityUnits": "1",
+						"WriteCapacityUnits": "1"
+					}
 				}]
 			}
 		}
