@@ -14,7 +14,10 @@
       "Type": "String",
       "Description": "The name of the ElasticBeanstalk Environment"
     },
-
+    "VirtualHost": {
+      "Type": "String",
+      "Description": "The virtual hostname that will be used to access 4front, i.e. webapp.company.net"
+    },
     "VPCId": {
       "Type": "AWS::EC2::VPC::Id",
       "Description": "The VPC where the 4front instance should reside"
@@ -39,8 +42,8 @@
       "Description": "Specify internal if you want to create an internal load balancer in your VPC so that your Elastic Beanstalk application cannot be accessed from outside your VPC."
     },
 
-    "SecurityGroupId": {
-      "Type": "AWS::EC2::SecurityGroup::Id",
+    "SecurityGroupIds": {
+      "Type": "List<AWS::EC2::SecurityGroup::Id>",
       "Description": "The SecurityGroup the 4front instance should utilize"
     },
 
@@ -81,6 +84,11 @@
       "Description": "The name of the S3 bucket where virtual app assets are deployed",
       "Type": "String"
     },
+    "S3DeploymentsKeyPrefix": {
+      "Description": "Optional S3 key prefix that defines the path where deployed assets are stored in the S3DeploymentsBucket. If blank, they will be written to the root of the bucket.",
+      "Type": "String",
+      "Default": ""
+    },
     "StaticAssetHost": {
       "Description": "The path where static asset URLs should be pointed",
       "Type": "String"
@@ -91,6 +99,18 @@
     },
     "LdapBaseDN": {
       "Description": "The base distinguished name for the LDAP server",
+      "Type": "String"
+    },
+    "HttpProxy": {
+      "Description": "The value for the HTTP_PROXY environment variable if needed. Generally this is for VPCs where outbound internet access is restricted.",
+      "Type": "String"
+    },
+    "HttpsProxy": {
+      "Description": "The value for the HTTPS_PROXY environment variable if needed. This is oftentimes the same as HttpProxy",
+      "Type": "String"
+    },
+    "NoProxy": {
+      "Description": "The value for the NO_PROXY environment variable if needed.",
       "Type": "String"
     }
   },
@@ -116,7 +136,9 @@
           "Namespace": "aws:autoscaling:launchconfiguration",
           "OptionName": "SecurityGroups",
           "Value": {
-            "Ref": "SecurityGroupId"
+            "Fn::Join": [",", {
+              "Ref": "SecurityGroupIds"
+            }]
           }
         }, {
           "Namespace": "aws:autoscaling:launchconfiguration",
@@ -164,7 +186,7 @@
               "Ref": "ELBSubnet"
             }]
           }
-        }, , {
+        }, {
           "Namespace": "aws:elasticbeanstalk:application:environment",
           "OptionName": "FF_VIRTUAL_HOST",
           "Value": {
@@ -239,6 +261,24 @@
           "OptionName": "FF_LDAP_BASE_DN",
           "Value": {
             "Ref": "LdapBaseDN"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "HTTP_PROXY",
+          "Value": {
+            "Ref": "HttpProxy"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "HTTPS_PROXY",
+          "Value": {
+            "Ref": "HttpsProxy"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "NO_PROXY",
+          "Value": {
+            "Ref": "NoProxy"
           }
         }]
       }
