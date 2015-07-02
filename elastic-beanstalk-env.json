@@ -200,9 +200,9 @@
           }
         }, {
           "Namespace": "aws:elasticbeanstalk:application:environment",
-          "OptionName": "FF_STATIC_ASSET_HOST",
+          "OptionName": "FF_DEPLOYED_ASSETS_PATH",
           "Value": {
-            "Ref": "StaticAssetHost"
+            "Ref": "DeployedAssetsPath"
           }
         }, {
           "Namespace": "aws:elasticbeanstalk:application:environment",
