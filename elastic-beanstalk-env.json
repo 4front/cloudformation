@@ -101,6 +101,18 @@
       "Description": "The base distinguished name for the LDAP server",
       "Type": "String"
     },
+    "LdapUsersDN": {
+      "Description": "The LDAP distinguished name for users, i.e. ou=users,ou=accounts,dc=company,dc=net",
+      "Type": "String"
+    },
+    "LdapGroupsDN": {
+      "Description": "The LDAP distinguished name for groups, i.e. ou=groups,ou=accounts,dc=company,dc=net",
+      "Type": "String"
+    },
+    "Addons": {
+      "Description": "The list of npm modules to install as addons",
+      "Type": "String"
+    },
     "HttpProxy": {
       "Description": "The value for the HTTP_PROXY environment variable if needed. Generally this is for VPCs where outbound internet access is restricted.",
       "Type": "String"
@@ -112,6 +124,11 @@
     "NoProxy": {
       "Description": "The value for the NO_PROXY environment variable if needed.",
       "Type": "String"
+    },
+    "JwtTokenExpires": {
+      "Description": "The number of minutes before a newly issued JWT will expire",
+      "Type": "Number",
+      "Default": 60
     }
   },
 
@@ -236,6 +253,12 @@
           "Value": "<UPDATE_ME>"
         }, {
           "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "FF_JWT_TOKEN_EXPIRE",
+          "Value": {
+            "Ref": "JwtTokenExpires"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
           "OptionName": "FF_SESSION_SECRET",
           "Value": "<UPDATE_ME>"
         }, {
@@ -261,6 +284,24 @@
           "OptionName": "FF_LDAP_BASE_DN",
           "Value": {
             "Ref": "LdapBaseDN"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "FF_LDAP_USERS_DN",
+          "Value": {
+            "Ref": "LdapUsersDN"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "FF_LDAP_GROUPS_DN",
+          "Value": {
+            "Ref": "LdapGroupsDN"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "FF_ADDONS",
+          "Value": {
+            "Ref": "Addons"
           }
         }, {
           "Namespace": "aws:elasticbeanstalk:application:environment",
