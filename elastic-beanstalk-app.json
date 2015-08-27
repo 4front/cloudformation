@@ -81,10 +81,6 @@
       "Description": "The name of the S3 bucket where virtual app assets are deployed",
       "Type": "String"
     },
-    "StaticAssetHost": {
-      "Description": "The path where static asset URLs should be pointed",
-      "Type": "String"
-    },
     "LdapUrl": {
       "Description": "The URL of the LDAP server, i.e. ldap://ldap.company.net",
       "Type": "String"

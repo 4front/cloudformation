@@ -14,6 +14,7 @@
       "Type": "String",
       "Description": "The name of the ElasticBeanstalk Environment"
     },
+
     "VirtualHost": {
       "Type": "String",
       "Description": "The virtual hostname that will be used to access 4front, i.e. webapp.company.net"
@@ -80,6 +81,10 @@
       "Type": "String",
       "Default": "production"
     },
+    "DeployedAssetsPath": {
+      "Description": "The path to deployed assets. Could be an absolute CDN url or a relative S3 folder",
+      "Type": "String"
+    },
     "S3DeploymentsBucket": {
       "Description": "The name of the S3 bucket where virtual app assets are deployed",
       "Type": "String"
@@ -88,10 +93,6 @@
       "Description": "Optional S3 key prefix that defines the path where deployed assets are stored in the S3DeploymentsBucket. If blank, they will be written to the root of the bucket.",
       "Type": "String",
       "Default": ""
-    },
-    "StaticAssetHost": {
-      "Description": "The path where static asset URLs should be pointed",
-      "Type": "String"
     },
     "LdapUrl": {
       "Description": "The URL of the LDAP server, i.e. ldap://ldap.company.net",
@@ -109,26 +110,20 @@
       "Description": "The LDAP distinguished name for groups, i.e. ou=groups,ou=accounts,dc=company,dc=net",
       "Type": "String"
     },
-    "Addons": {
-      "Description": "The list of npm modules to install as addons",
-      "Type": "String"
-    },
-    "HttpProxy": {
-      "Description": "The value for the HTTP_PROXY environment variable if needed. Generally this is for VPCs where outbound internet access is restricted.",
-      "Type": "String"
-    },
-    "HttpsProxy": {
-      "Description": "The value for the HTTPS_PROXY environment variable if needed. This is oftentimes the same as HttpProxy",
-      "Type": "String"
-    },
-    "NoProxy": {
-      "Description": "The value for the NO_PROXY environment variable if needed.",
-      "Type": "String"
+    "LdapUsernamePrefix": {
+      "Description": "The prefix usernames must have to invoke the bind operation, i.e. corp/ (including trailing slash)",
+      "Type": "String",
+      "Default": ""
     },
     "JwtTokenExpires": {
       "Description": "The number of minutes before a newly issued JWT will expire",
       "Type": "Number",
       "Default": 60
+    },
+    "SessionTimeout": {
+      "Description": "The number of minutes that portal login sessions are valid",
+      "Type": "Number",
+      "Default": 1440
     }
   },
 
@@ -143,8 +138,7 @@
           "Ref": "EnvironmentName"
         },
         "Description": "4front ElasticBeanstalk environment",
-        "SolutionStackName": "64bit Amazon Linux 2015.03 v1.4.1 running Node.js",
-        "VersionLabel": "Initial Version",
+        "SolutionStackName": "64bit Amazon Linux 2015.03 v2.0.0 running Node.js",
         "OptionSettings": [{
           "Namespace": "aws:elasticbeanstalk:environment",
           "OptionName": "EnvironmentType",
@@ -217,12 +211,6 @@
           }
         }, {
           "Namespace": "aws:elasticbeanstalk:application:environment",
-          "OptionName": "FF_DEPLOYED_ASSETS_PATH",
-          "Value": {
-            "Ref": "DeployedAssetsPath"
-          }
-        }, {
-          "Namespace": "aws:elasticbeanstalk:application:environment",
           "OptionName": "FF_CACHE_VIRTUAL_APPS",
           "Value": {
             "Ref": "CacheVirtualApps"
@@ -263,6 +251,12 @@
           "Value": "<UPDATE_ME>"
         }, {
           "Namespace": "aws:elasticbeanstalk:application:environment",
+          "OptionName": "FF_DEPLOYED_ASSETS_PATH",
+          "Value": {
+            "Ref": "DeployedAssetsPath"
+          }
+        }, {
+          "Namespace": "aws:elasticbeanstalk:application:environment",
           "OptionName": "FF_S3_DEPLOYMENTS_BUCKET",
           "Value": {
             "Ref": "S3DeploymentsBucket"
@@ -299,27 +293,15 @@
           }
         }, {
           "Namespace": "aws:elasticbeanstalk:application:environment",
-          "OptionName": "FF_ADDONS",
+          "OptionName": "FF_LDAP_USERNAME_PREFIX",
           "Value": {
-            "Ref": "Addons"
+            "Ref": "LdapUsernamePrefix"
           }
         }, {
           "Namespace": "aws:elasticbeanstalk:application:environment",
-          "OptionName": "HTTP_PROXY",
+          "OptionName": "FF_SESSION_TIMEOUT",
           "Value": {
-            "Ref": "HttpProxy"
-          }
-        }, {
-          "Namespace": "aws:elasticbeanstalk:application:environment",
-          "OptionName": "HTTPS_PROXY",
-          "Value": {
-            "Ref": "HttpsProxy"
-          }
-        }, {
-          "Namespace": "aws:elasticbeanstalk:application:environment",
-          "OptionName": "NO_PROXY",
-          "Value": {
-            "Ref": "NoProxy"
+            "Ref": "SessionTimeout"
           }
         }]
       }
